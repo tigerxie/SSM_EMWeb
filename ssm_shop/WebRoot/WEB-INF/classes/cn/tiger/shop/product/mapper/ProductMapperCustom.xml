@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.tiger.shop.product.mapper.ProductMapperCustom" >
+	
+	<!-- 查询商品的 resultMap -->
+	<resultMap type="product" id="findProductMap">
+		<id column="pid" property="pid"/>
+		<result column="pname" property="pname"/>
+		<result column="shop_price" property="shopPrice"/>
+		<result column="image" property="image"/>
+		<result column="is_hot" property="isHot"/>
+	</resultMap>
+	
+	<!-- 查询热门商品  -->
+	<select id="findHot" resultType="product">
+		SELECT * FROM product WHERE is_hot=1 ORDER BY pdate DESC LIMIT 0,10
+	</select>
+	<!-- 查询最新商品  -->
+	<select id="findNew" resultType="product">
+		SELECT * FROM product ORDER BY pdate DESC LIMIT 0,10
+	</select>
+	<!-- 通过 cid 查询总记录数 -->
+	<select id="findTotalRecordByCid" parameterType="int" resultType="int">
+		SELECT COUNT(*) 
+		FROM product p,categorysecond cs 
+		WHERE cid=#{value} AND cs.csid=p.csid
+	</select>
+	<!-- 通过 cid 查询当前页面记录 -->
+	<select id="findByCidPage" resultMap="findProductMap">
+		SELECT p.pid,p.pname,p.shop_price,p.image
+		FROM product p,categorysecond cs 
+		WHERE cid=#{0} AND cs.csid=p.csid 
+		ORDER BY pdate DESC 
+		LIMIT #{1},#{2};
+	</select>
+	<!-- 通过 csid 查询总记录数 -->
+	<select id="findTotalRecordByCsid" parameterType="int" resultType="int">
+		SELECT COUNT(*) 
+		FROM product
+		WHERE csid = #{value}
+	</select>
+	<!-- 通过 csid 查询当前页面记录 -->
+	<select id="findByCsidPage" resultMap="findProductMap">
+		SELECT p.pid,p.pname,p.shop_price,p.image
+		FROM product p
+		WHERE csid=#{0}
+		ORDER BY pdate DESC 
+		LIMIT #{1},#{2};
+	</select>
+	
+	<!-- 通过查询总记录数 -->
+	<select id="findTotalRecord" resultType="int">
+		SELECT COUNT(*) 
+		FROM product
+	</select>
+	<!-- 通过查询当前页面记录 -->
+	<select id="findByPage" resultMap="findProductMap">
+		SELECT p.pid,p.pname,p.shop_price,p.image,p.is_hot
+		FROM product p
+		ORDER BY pdate DESC 
+		LIMIT #{0},#{1};
+	</select>
+	
+	
+</mapper>

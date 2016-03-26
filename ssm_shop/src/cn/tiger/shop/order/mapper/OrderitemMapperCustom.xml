@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.tiger.shop.order.mapper.OrderitemMapperCustom" >
+
+	<!-- 查询订单条目的 resultMap -->
+	<resultMap type="orderitemCustom" id="findOrderitemCustomMap">
+		<id column="itemid" property="itemid"/>
+		<result column="count" property="count"/>
+		<result column="subtotal" property="subtotal"/>
+		<association property="product" javaType="product">
+			<id column="pid" property="pid"/>
+			<result column="pname" property="pname"/>
+			<result column="image" property="image"/>
+		</association>
+	</resultMap>
+	<!-- 保存订单条目 -->
+	<insert id="save" parameterType="orderitemCustom" >
+		insert into orderitem (itemid, count, subtotal, 
+		  pid, oid)
+		values (#{itemid,jdbcType=INTEGER}, #{count,jdbcType=INTEGER}, #{subtotal,jdbcType=DOUBLE}, 
+		  #{product.pid,jdbcType=INTEGER}, #{ordersCustom.oid,jdbcType=INTEGER})
+	</insert>
+  	
+  	<!-- 通过 oid 查询订单条目 -->
+  	<select id="findByOid" resultMap="findOrderitemCustomMap" parameterType="Integer">
+		SELECT * 
+		FROM orderitem oi,product p
+		WHERE oi.pid=p.pid AND oi.oid=#{value}
+  	</select>
+  
+  
+</mapper>

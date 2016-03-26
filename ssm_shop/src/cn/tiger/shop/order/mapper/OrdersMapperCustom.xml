@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.tiger.shop.order.mapper.OrdersMapperCustom" >
+
+	<!-- 查询订单的 resultMap -->
+	<resultMap type="ordersCustom" id="findOrdersCustomMap">
+		<id column="oid" property="oid"/>
+		<result column="total" property="total"/>
+		<result column="state" property="state"/>
+		<!-- 用户映射一对一 -->
+		<association property="user" javaType="User">
+			<id column="uid" property="uid"/>
+			<result column="addr" property="addr"/>
+			<result column="name" property="name"/>
+			<result column="phone" property="phone"/>
+		</association>
+		<!-- 订单条目集合映射一对多 -->
+		<collection property="orderitemCustoms" ofType="OrderitemCustom">
+			<id column="itemid" property="itemid"/>
+			<result column="count" property="count"/>
+			<result column="subtotal" property="subtotal"/>
+			<!-- 商品映射一对一 -->
+			<association property="product"  javaType="Product">
+				<id column="pid" property="pid"/>
+				<result column="image" property="image"/>
+				<result column="pname" property="pname"/>
+				<result column="shop_price" property="shopPrice"/>
+			</association>
+		</collection>
+	</resultMap>
+
+
+	<!-- 保存订单 -->
+	<insert id="save" parameterType="ordersCustom" useGeneratedKeys="true" keyProperty="oid" >
+
+	    insert into orders (total, ordertime, 
+	      state, name, phone, 
+	      addr, uid)
+	    values (#{total,jdbcType=DOUBLE}, #{ordertime,jdbcType=TIMESTAMP}, 
+	      #{state,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, 
+	      #{addr,jdbcType=VARCHAR}, #{user.uid,jdbcType=INTEGER})
+    	<!-- <selectKey keyProperty="oid" order="AFTER" resultType="int">
+	  		SELECT LAST_INSERT_ID() as oid
+	  	</selectKey> -->
+	</insert>
+	
+	<!-- 按 uid 查询总记录数 -->
+	<select id="findTotalRecordByUid" parameterType="int" resultType="int">
+		SELECT COUNT(*) 
+		FROM orders
+		WHERE uid=#{value}
+	</select>
+	<!-- 查询当前页面记录 -->
+	<select id="findByUidPage" resultMap="findOrdersCustomMap">
+		SELECT p.image,p.pname,p.shop_price,oi.count,oi.subtotal,o.oid,o.total,o.state
+		FROM product p,orderitem oi,orders o
+		WHERE o.uid=#{0} AND oi.oid=o.oid AND oi.pid=p.pid
+		ORDER BY ordertime DESC 
+		LIMIT #{1},#{2};
+	</select>
+	
+	
+	<!-- 查询当前页面记录 -->
+	<select id="findByOid" resultMap="findOrdersCustomMap">
+		SELECT p.image,p.pname,p.shop_price,oi.count,oi.subtotal,o.oid,o.total,o.state,u.addr,u.phone,u.name
+		FROM product p,orderitem oi,orders o,user u
+		WHERE o.oid=#{0} AND oi.oid=o.oid AND oi.pid=p.pid AND u.uid=o.uid
+	</select>
+	
+	<!-- 修改订单 -->
+	<update id="update" parameterType="ordersCustom">
+		update orders
+		set name=#{name},phone=#{phone},addr=#{addr},state=#{state}
+		where oid=#{oid}
+	</update>
+	
+	<!-- 查询总记录数 -->
+	<select id="findTotalRecord" resultType="int">
+		SELECT COUNT(*) 
+		FROM orders
+	</select>
+	
+	<!-- 查询当前页面记录 -->
+	<select id="findByPage" resultType="ordersCustom">
+		SELECT *
+		FROM orders
+		ORDER BY ordertime DESC 
+		LIMIT #{0},#{1};
+	</select>
+
+</mapper>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+	<!-- 全局setting配置，需要时再添加 -->
+
+	<!-- 配置别名 -->
+	<typeAliases>
+		<!-- 批量扫描别名 -->
+		<!-- 用户模块 -->
+		<package name="cn.tiger.shop.user.vo"/>
+		<!-- 一级分类模块 -->
+		<package name="cn.tiger.shop.category.vo"/>
+		<!-- 商品模块 -->
+		<package name="cn.tiger.shop.product.vo"/>
+		<!-- 二级分类模块 -->
+		<package name="cn.tiger.shop.categorysecond.vo"/>
+		<!-- 订单模块 -->
+		<package name="cn.tiger.shop.order.vo"/>
+		<!-- 管理员模块 -->
+		<package name="cn.tiger.shop.adminuser.vo"/>
+	</typeAliases>
+	
+	<!-- 批量配置mapper 
+	使用spring和mybatis的整合包，进行mapper扫描，这里不需要配置了，
+	必须遵循：mapper.xml和mapper.java文件同名且在一个目录
+	<mappers>
+	
+	</mappers>
+	-->
+</configuration>

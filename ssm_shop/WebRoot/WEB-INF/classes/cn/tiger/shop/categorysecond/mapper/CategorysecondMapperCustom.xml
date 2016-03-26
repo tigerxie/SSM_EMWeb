@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.tiger.shop.categorysecond.mapper.CategorysecondMapperCustom" >
+
+	<!-- 根据 cid 查询二级分类数量 -->	
+	<select id="countByCid" parameterType="int" resultType="int">
+		SELECT COUNT(*) FROM categorysecond WHERE cid=#{value}
+	</select>
+
+	<!-- 通过查询总记录数 -->
+	<select id="findTotalRecord" resultType="int">
+		SELECT COUNT(*) 
+		FROM categorysecond
+	</select>
+	
+	<!-- 通过 csid 查询当前页面记录 -->
+	<select id="findAll" resultType="Categorysecond">
+		SELECT *
+		FROM categorysecond
+		ORDER BY csid ASC 
+		LIMIT #{0},#{1};
+	</select>
+	
+	<select id="findAllCS" resultType="Categorysecond">
+		SELECT *
+		FROM categorysecond
+		ORDER BY csid ASC 
+	</select>
+</mapper>
